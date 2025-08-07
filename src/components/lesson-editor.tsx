@@ -319,25 +319,20 @@ export default function LessonEditor({ lessonId, moduleId, onBack, onSave }: Les
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="aspect-video bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-2">
-                  <Image className="h-8 w-8 text-gray-400" />
-                  <p className="text-sm text-gray-500 text-center">
-                    Recommended dimensions of<br />1280×720
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleImageUpload}
-                    className="mt-2"
-                  >
-                    Upload Image
-                  </Button>
-                  {lessonData.imageUrl && (
-                    <Button variant="ghost" size="sm" className="text-red-600">
-                      Remove
-                    </Button>
-                  )}
-                </div>
+                <FileUpload
+                  type="images"
+                  onFileUploaded={handleImageUploaded}
+                  maxSize={10}
+                />
+                {lessonData.imageUrl && (
+                  <div className="mt-3">
+                    <img 
+                      src={lessonData.imageUrl} 
+                      alt="Lesson thumbnail" 
+                      className="w-32 h-20 object-cover rounded border"
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
 
