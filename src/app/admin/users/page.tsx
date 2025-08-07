@@ -7,7 +7,7 @@ import MainLayout from '@/components/layout/main-layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Plus, Search, Edit2, Trash2, UserPlus } from 'lucide-react'
+import { Search, Edit2, Trash2, UserPlus } from 'lucide-react'
 
 interface User {
   id: string
@@ -30,6 +30,12 @@ export default function AdminUsersPage() {
     role: 'STAFF'
   })
 
+  useEffect(() => {
+    if (session && (session.user.role === 'ADMIN' || session.user.role === 'MANAGER')) {
+      fetchUsers()
+    }
+  }, [session])
+
   // Check if user is admin/manager
   if (status === 'loading') {
     return <div>Loading...</div>
@@ -38,10 +44,6 @@ export default function AdminUsersPage() {
   if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'MANAGER')) {
     redirect('/dashboard')
   }
-
-  useEffect(() => {
-    fetchUsers()
-  }, [])
 
   async function fetchUsers() {
     try {

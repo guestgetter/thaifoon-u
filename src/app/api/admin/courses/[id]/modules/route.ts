@@ -60,7 +60,7 @@ export async function POST(
 
     const orderIndex = (lastModule?.orderIndex || 0) + 1
 
-    const module = await prisma.module.create({
+    const newModule = await prisma.module.create({
       data: {
         title,
         description: description || '',
@@ -74,7 +74,7 @@ export async function POST(
       }
     })
 
-    return NextResponse.json(module, { status: 201 })
+    return NextResponse.json(newModule, { status: 201 })
   } catch (error) {
     console.error('Error creating module:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

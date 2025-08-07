@@ -22,7 +22,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Title is required' }, { status: 400 })
     }
 
-    const module = await prisma.module.update({
+    const updatedModule = await prisma.module.update({
       where: { id: id },
       data: {
         title,
@@ -35,7 +35,7 @@ export async function PUT(
       }
     })
 
-    return NextResponse.json(module)
+    return NextResponse.json(updatedModule)
   } catch (error) {
     console.error('Error updating module:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

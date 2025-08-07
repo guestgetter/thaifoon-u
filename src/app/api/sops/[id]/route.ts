@@ -66,7 +66,13 @@ export async function PUT(
     const { title, content, categoryId, version, isActive } = body
 
     // Allow partial updates for isActive toggle
-    const updateData: any = {}
+    const updateData: {
+      title?: string
+      content?: string
+      categoryId?: string
+      version?: string
+      isActive?: boolean
+    } = {}
     if (title !== undefined) updateData.title = title
     if (content !== undefined) updateData.content = content
     if (categoryId !== undefined) updateData.categoryId = categoryId

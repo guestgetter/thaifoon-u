@@ -274,7 +274,7 @@ export default function CourseContentEditor({ courseId, courseName }: CourseCont
         <DialogHeader>
           <DialogTitle>Course Content Editor</DialogTitle>
           <DialogDescription>
-            Manage modules and lessons for "{courseName}"
+            Manage modules and lessons for &quot;{courseName}&quot;
           </DialogDescription>
         </DialogHeader>
 
@@ -502,7 +502,7 @@ export default function CourseContentEditor({ courseId, courseName }: CourseCont
               <label className="text-sm font-medium">Content Type</label>
               <Select
                 value={lessonForm.contentType}
-                onValueChange={(value: any) => setLessonForm({ ...lessonForm, contentType: value })}
+                onValueChange={(value: string) => setLessonForm({ ...lessonForm, contentType: value })}
               >
                 <SelectTrigger>
                   <SelectValue />

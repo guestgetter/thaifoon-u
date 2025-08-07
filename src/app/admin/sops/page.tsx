@@ -36,6 +36,12 @@ export default function AdminSOPsPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
 
+  useEffect(() => {
+    if (session && (session.user.role === 'ADMIN' || session.user.role === 'MANAGER')) {
+      fetchSOPs()
+    }
+  }, [session])
+
   // Check if user is admin/manager
   if (status === 'loading') {
     return <div>Loading...</div>
@@ -44,10 +50,6 @@ export default function AdminSOPsPage() {
   if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'MANAGER')) {
     redirect('/dashboard')
   }
-
-  useEffect(() => {
-    fetchSOPs()
-  }, [])
 
   async function fetchSOPs() {
     try {

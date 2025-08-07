@@ -71,7 +71,7 @@ export default function SOPEditor({ initialContent = "", onChange }: SOPEditorPr
         
         // Get content after this h2 until next h2
         let nextElement = h2.nextElementSibling
-        let contentParts: string[] = []
+        const contentParts: string[] = []
         
         while (nextElement && nextElement.tagName !== 'H2') {
           if (nextElement.tagName === 'OL' || nextElement.tagName === 'UL') {

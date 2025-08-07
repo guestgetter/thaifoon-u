@@ -14,7 +14,16 @@ interface LessonEditorProps {
   lessonId?: string
   moduleId: string
   onBack: () => void
-  onSave: (lessonData: any) => void
+  onSave: (lessonData: LessonData) => void
+}
+
+interface LessonData {
+  title: string
+  content: string
+  videoUrl?: string
+  audioUrl?: string
+  imageUrl?: string
+  attachedFiles?: AttachedFile[]
 }
 
 interface AttachedFile {
