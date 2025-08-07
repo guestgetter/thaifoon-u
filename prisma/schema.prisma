@@ -1,0 +1,225 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+enum ContentType {
+  VIDEO
+  TEXT
+  FILE
+  MIXED
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  SHORT_ANSWER
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      UserRole @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Progress tracking
+  userProgress    UserProgress[]
+  quizAttempts    UserQuizAttempt[]
+  
+  // Admin relationships
+  createdCourses  Course[] @relation("CourseCreator")
+  createdQuizzes  Quiz[]   @relation("QuizCreator")
+  createdSOPs     StandardOperatingProcedure[] @relation("SOPCreator")
+
+  @@map("users")
+}
+
+model Category {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String?
+  color       String? // For UI theming
+  
+  courses Course[]
+  sops    StandardOperatingProcedure[]
+  
+  @@map("categories")
+}
+
+model Course {
+  id          String      @id @default(cuid())
+  title       String
+  description String
+  thumbnail   String?
+  isPublished Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  
+  createdById String
+  createdBy   User        @relation("CourseCreator", fields: [createdById], references: [id])
+  
+  modules     Module[]
+  userProgress UserProgress[]
+  
+  @@map("courses")
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  orderIndex  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  lessons     Lesson[]
+  
+  @@map("modules")
+}
+
+model Lesson {
+  id          String      @id @default(cuid())
+  title       String
+  content     String      // Rich text content
+  contentType ContentType @default(TEXT)
+  videoUrl    String?
+  fileUrl     String?
+  duration    Int?        // in minutes
+  orderIndex  Int
+  isRequired  Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  moduleId    String
+  module      Module      @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  
+  userProgress UserProgress[]
+  
+  @@map("lessons")
+}
+
+model Quiz {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  passingScore Int     @default(70) // percentage
+  maxAttempts Int     @default(3)
+  timeLimit   Int?    // in minutes
+  isPublished Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  createdById String
+  createdBy   User     @relation("QuizCreator", fields: [createdById], references: [id])
+  
+  questions   Question[]
+  attempts    UserQuizAttempt[]
+  
+  @@map("quizzes")
+}
+
+model Question {
+  id           String       @id @default(cuid())
+  question     String
+  type         QuestionType
+  points       Int          @default(1)
+  orderIndex   Int
+  explanation  String?      // Optional explanation for the correct answer
+  
+  quizId       String
+  quiz         Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  
+  answers      Answer[]
+  
+  @@map("questions")
+}
+
+model Answer {
+  id         String  @id @default(cuid())
+  text       String
+  isCorrect  Boolean @default(false)
+  orderIndex Int
+  
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@map("answers")
+}
+
+model StandardOperatingProcedure {
+  id          String      @id @default(cuid())
+  title       String
+  content     String      // Rich text content
+  version     String      @default("1.0")
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  
+  createdById String
+  createdBy   User        @relation("SOPCreator", fields: [createdById], references: [id])
+  
+  @@map("standard_operating_procedures")
+}
+
+model UserProgress {
+  id          String   @id @default(cuid())
+  isCompleted Boolean  @default(false)
+  progress    Float    @default(0) // percentage 0-100
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  courseId    String?
+  course      Course?  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  lessonId    String?
+  lesson      Lesson?  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, courseId])
+  @@unique([userId, lessonId])
+  @@map("user_progress")
+}
+
+model UserQuizAttempt {
+  id          String   @id @default(cuid())
+  score       Float    // percentage score
+  passed      Boolean
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  answers     Json     // Store user's answers
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  quizId      String
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  
+  @@map("user_quiz_attempts")
+}
