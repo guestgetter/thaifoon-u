@@ -20,7 +20,7 @@ export default function CrudTestPanel() {
     categoryId: '',
   })
 
-  const addResult = (operation: string, status: 'success' | 'error', message: string) => {
+  const addResult = (operation: string, status: 'success' | 'error' | 'testing', message: string) => {
     setResults(prev => [...prev, {
       operation,
       status,

@@ -66,7 +66,7 @@ export default function CourseContentEditor({ courseId, courseName }: CourseCont
   const [lessonForm, setLessonForm] = useState({
     title: '',
     content: '',
-    contentType: 'TEXT' as const,
+    contentType: 'TEXT' as 'TEXT' | 'VIDEO' | 'FILE' | 'MIXED',
     videoUrl: '',
     fileUrl: '',
     duration: '',
@@ -502,7 +502,7 @@ export default function CourseContentEditor({ courseId, courseName }: CourseCont
               <label className="text-sm font-medium">Content Type</label>
               <Select
                 value={lessonForm.contentType}
-                onValueChange={(value: string) => setLessonForm({ ...lessonForm, contentType: value })}
+                onValueChange={(value: 'TEXT' | 'VIDEO' | 'FILE' | 'MIXED') => setLessonForm({ ...lessonForm, contentType: value })}
               >
                 <SelectTrigger>
                   <SelectValue />

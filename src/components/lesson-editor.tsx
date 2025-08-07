@@ -38,13 +38,11 @@ interface AttachedFile {
 export default function LessonEditor({ lessonId, moduleId, onBack, onSave }: LessonEditorProps) {
   const [lessonData, setLessonData] = useState({
     title: "",
-    category: "Course Contents",
-    description: "",
+    content: "",
     contentType: "text" as "text" | "video" | "audio",
     videoUrl: "",
     audioUrl: "",
-    isPublished: false,
-    thumbnailUrl: "",
+    imageUrl: "",
     attachedFiles: [] as AttachedFile[]
   })
 
@@ -71,7 +69,7 @@ export default function LessonEditor({ lessonId, moduleId, onBack, onSave }: Les
   const handleImageUploaded = (uploadedFile: UploadedFile) => {
     setLessonData({
       ...lessonData,
-      thumbnailUrl: uploadedFile.url
+      imageUrl: uploadedFile.url
     })
   }
 
@@ -291,8 +289,8 @@ export default function LessonEditor({ lessonId, moduleId, onBack, onSave }: Les
                       </div>
                     </div>
                     <Textarea
-                      value={lessonData.description}
-                      onChange={(e) => setLessonData({ ...lessonData, description: e.target.value })}
+                      value={lessonData.content}
+                      onChange={(e) => setLessonData({ ...lessonData, content: e.target.value })}
                       placeholder="Enter lesson description..."
                       className="min-h-[200px] border-none rounded-t-none focus-visible:ring-0"
                     />
@@ -354,10 +352,10 @@ export default function LessonEditor({ lessonId, moduleId, onBack, onSave }: Les
                   onFileUploaded={handleImageUploaded}
                   maxSize={10}
                 />
-                {lessonData.thumbnailUrl && (
+                {lessonData.imageUrl && (
                   <div className="mt-3">
                     <img 
-                      src={lessonData.thumbnailUrl} 
+                                              src={lessonData.imageUrl} 
                       alt="Lesson thumbnail" 
                       className="w-32 h-20 object-cover rounded border"
                     />
@@ -388,7 +386,7 @@ export default function LessonEditor({ lessonId, moduleId, onBack, onSave }: Les
                   >
                     Upload Image
                   </Button>
-                  {lessonData.thumbnailUrl && (
+                  {lessonData.imageUrl && (
                     <Button variant="ghost" size="sm" className="text-red-600">
                       Remove
                     </Button>
