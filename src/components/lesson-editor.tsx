@@ -248,24 +248,7 @@ export default function LessonEditor({ lessonId, moduleId, onBack, onSave }: Les
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category
-                  </label>
-                  <Select
-                    value={lessonData.category}
-                    onValueChange={(value) => setLessonData({ ...lessonData, category: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Course Contents">Course Contents</SelectItem>
-                      <SelectItem value="Bonus Materials">Bonus Materials</SelectItem>
-                      <SelectItem value="Resources">Resources</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
