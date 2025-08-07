@@ -132,7 +132,7 @@ export default function LessonEditor({ lessonId, moduleId, onBack, onSave }: Les
               )}
 
               <div className="prose prose-lg max-w-none">
-                {lessonData.description.split('\n').map((paragraph, index) => (
+                {lessonData.content.split('\n').map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
               </div>
