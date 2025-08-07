@@ -285,44 +285,7 @@ export default function LessonEditor({ lessonId, moduleId, onBack, onSave }: Les
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Lesson Visibility */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Lesson Visibility</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="visibility"
-                      checked={lessonData.isPublished}
-                      onChange={() => setLessonData({ ...lessonData, isPublished: true })}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                    <span>Published</span>
-                    {lessonData.isPublished && (
-                      <Badge className="bg-green-100 text-green-800">✓ Published</Badge>
-                    )}
-                  </label>
-                </div>
-                <div className="flex items-center gap-4 mt-3">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="visibility"
-                      checked={!lessonData.isPublished}
-                      onChange={() => setLessonData({ ...lessonData, isPublished: false })}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                    <span>Draft</span>
-                    {!lessonData.isPublished && (
-                      <Badge variant="secondary">Draft</Badge>
-                    )}
-                  </label>
-                </div>
-              </CardContent>
-            </Card>
+
 
             {/* Lesson Thumbnail */}
             <Card>
