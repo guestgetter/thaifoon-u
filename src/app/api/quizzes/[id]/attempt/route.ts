@@ -66,8 +66,6 @@ export async function POST(
         quizId: quizId,
         score: score,
         passed: passed,
-        attemptNumber: attemptNumber,
-        timeTaken: timeTaken,
         answers: answers,
         completedAt: new Date()
       }

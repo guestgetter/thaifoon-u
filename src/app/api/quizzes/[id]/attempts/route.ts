@@ -44,7 +44,7 @@ export async function GET(
         }
       },
       orderBy: {
-        attemptNumber: 'asc'
+        startedAt: 'asc'
       }
     })
 
@@ -56,7 +56,7 @@ export async function GET(
       attempts.reduce((sum, a) => sum + a.score, 0) / attempts.length : 0
     
     const firstPassAttempt = attempts.find(a => a.passed)
-    const attemptsToPass = firstPassAttempt ? firstPassAttempt.attemptNumber : null
+    const attemptsToPass = firstPassAttempt ? attempts.findIndex(a => a.id === firstPassAttempt.id) + 1 : null
 
     return NextResponse.json({
       attempts,
