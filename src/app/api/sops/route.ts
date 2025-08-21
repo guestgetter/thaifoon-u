@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { title, content, categoryId, version } = body
+    const { title, content, categoryId, version, attachments } = body
 
     if (!title || !content || !categoryId) {
       return NextResponse.json({ error: 'Title, content, and category are required' }, { status: 400 })
@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
         content,
         categoryId,
         version: version || '1.0',
+        attachments: attachments || [],
         createdById: session.user.id,
         isActive: true,
       },

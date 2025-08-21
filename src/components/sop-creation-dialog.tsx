@@ -5,6 +5,7 @@ import { Plus, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import SOPEditor from "@/components/sop-editor"
+import FileUpload, { UploadedFile } from "@/components/file-upload"
 import { sopTemplates, getTemplateById } from "@/lib/sop-templates"
 import {
   Dialog,
@@ -43,6 +44,7 @@ export default function SOPCreationDialog({ onSOPCreated }: SOPCreationDialogPro
     content: "",
     categoryId: "",
     version: "1.0",
+    attachments: [] as UploadedFile[],
   })
 
   useEffect(() => {
@@ -79,11 +81,20 @@ export default function SOPCreationDialog({ onSOPCreated }: SOPCreationDialogPro
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          attachments: formData.attachments.map(file => ({
+            name: file.name,
+            url: file.url,
+            type: file.type,
+            size: file.size,
+            uploadedAt: file.uploadedAt
+          }))
+        }),
       })
 
       if (response.ok) {
-        setFormData({ title: "", content: "", categoryId: "", version: "1.0" })
+        setFormData({ title: "", content: "", categoryId: "", version: "1.0", attachments: [] })
         setOpen(false)
         onSOPCreated()
       } else {
@@ -218,6 +229,48 @@ export default function SOPCreationDialog({ onSOPCreated }: SOPCreationDialogPro
               </div>
               <p className="text-xs text-gray-500">
                 Use the structured editor to create comprehensive SOPs with steps, safety notes, equipment lists, and more.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                File Attachments
+              </label>
+              <FileUpload
+                type="files"
+                onFileUploaded={(file) => setFormData({ 
+                  ...formData, 
+                  attachments: [...formData.attachments, file] 
+                })}
+                maxSize={50}
+              />
+              {formData.attachments.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs text-gray-600">Attached Files:</p>
+                  {formData.attachments.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded border">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm">{file.name}</span>
+                        <span className="text-xs text-gray-500">({Math.round(file.size / 1024)}KB)</span>
+                      </div>
+                      <Button 
+                        type="button"
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => setFormData({ 
+                          ...formData, 
+                          attachments: formData.attachments.filter((_, i) => i !== index) 
+                        })}
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <p className="text-xs text-gray-500">
+                Upload PDFs, documents, images, or other files to support your SOP.
               </p>
             </div>
           </div>

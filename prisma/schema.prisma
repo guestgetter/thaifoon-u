@@ -179,6 +179,7 @@ model StandardOperatingProcedure {
   content     String      // Rich text content
   version     String      @default("1.0")
   isActive    Boolean     @default(true)
+  attachments Json?       // Array of file attachments {name, url, type, size}
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   

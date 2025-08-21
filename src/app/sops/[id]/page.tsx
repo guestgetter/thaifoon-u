@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 import MainLayout from '@/components/layout/main-layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Calendar, User, Tag, FileText, Download, Printer } from 'lucide-react'
+import { ArrowLeft, Calendar, User, Tag, FileText, Download, Printer, Eye } from 'lucide-react'
 
 interface SOP {
   id: string
@@ -14,6 +14,13 @@ interface SOP {
   content: string
   version: string
   isActive: boolean
+  attachments?: Array<{
+    name: string
+    url: string
+    type: string
+    size: number
+    uploadedAt: string
+  }>
   createdAt: string
   updatedAt: string
   category: {
@@ -187,6 +194,42 @@ ${sop.content}
                 dangerouslySetInnerHTML={{ __html: sop.content }}
               />
             </div>
+
+            {/* File Attachments */}
+            {sop.attachments && sop.attachments.length > 0 && (
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Attachments</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {sop.attachments.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-6 w-6 text-gray-500" />
+                        <div>
+                          <p className="font-medium text-gray-900">{file.name}</p>
+                          <p className="text-xs text-gray-500">
+                            {Math.round(file.size / 1024)}KB • {file.type}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" asChild>
+                          <a href={file.url} target="_blank" rel="noopener noreferrer">
+                            <Eye className="h-4 w-4 mr-1" />
+                            View
+                          </a>
+                        </Button>
+                        <Button variant="outline" size="sm" asChild>
+                          <a href={file.url} download={file.name}>
+                            <Download className="h-4 w-4 mr-1" />
+                            Download
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
