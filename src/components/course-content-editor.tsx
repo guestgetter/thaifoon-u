@@ -74,10 +74,8 @@ export default function CourseContentEditor({ courseId, courseName }: CourseCont
   })
 
   useEffect(() => {
-    if (open) {
-      fetchModules()
-    }
-  }, [open, courseId])
+    fetchModules()
+  }, [courseId])
 
   async function fetchModules() {
     try {

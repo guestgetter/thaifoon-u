@@ -11,6 +11,7 @@ import CourseCreationDialog from "@/components/course-creation-dialog"
 import CourseEditDialog from "@/components/course-edit-dialog"
 import CourseStructureView from "@/components/course-structure-view"
 import LessonEditor from "@/components/lesson-editor"
+import CourseContentEditor from "@/components/course-content-editor"
 
 interface Course {
   id: string
@@ -143,8 +144,10 @@ export default function CleanCourseAdmin() {
   }
 
   const handleAddModule = () => {
-    // TODO: Implement add module functionality
-    console.log('Add module clicked')
+    setViewState({ 
+      view: 'course-content-editor', 
+      selectedCourseId: viewState.selectedCourseId 
+    })
   }
 
   const handleBackToList = () => {
@@ -206,6 +209,27 @@ export default function CleanCourseAdmin() {
           handleBackToCourse()
         }}
       />
+    )
+  }
+
+  if (viewState.view === 'course-content-editor') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" onClick={handleBackToList}>
+                ← Back to Courses
+              </Button>
+              <h1 className="text-xl font-semibold">Course Content Editor</h1>
+            </div>
+          </div>
+        </div>
+        <CourseContentEditor 
+          courseId={viewState.selectedCourseId || ''} 
+          courseName={courses.find(c => c.id === viewState.selectedCourseId)?.title || 'Course'}
+        />
+      </div>
     )
   }
 
@@ -331,6 +355,15 @@ export default function CleanCourseAdmin() {
                   >
                     <BookOpen className="h-4 w-4 mr-1" />
                     Structure
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => setViewState({ view: 'course-content-editor', selectedCourseId: course.id })}
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Content
                   </Button>
                   <CourseEditDialog courseId={course.id} onCourseUpdated={fetchCourses} />
                   <Button
