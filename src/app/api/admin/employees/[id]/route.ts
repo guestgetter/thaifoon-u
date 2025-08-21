@@ -33,7 +33,7 @@ export async function GET(
               select: { id: true, title: true }
             }
           },
-          orderBy: { createdAt: 'desc' }
+          orderBy: { startedAt: 'desc' }
         }
       }
     })
