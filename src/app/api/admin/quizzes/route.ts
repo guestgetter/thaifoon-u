@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         _count: {
           select: {
             questions: true,
-            userQuizAttempts: true
+            attempts: true
           }
         }
       },

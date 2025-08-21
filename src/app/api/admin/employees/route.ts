@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
               select: { title: true }
             }
           },
-          orderBy: { createdAt: 'desc' }
+          orderBy: { startedAt: 'desc' }
         } : false,
         _count: {
           select: {
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
           averageScore: attempts.length > 0 ? 
             Math.round((attempts.reduce((sum, a) => sum + a.score, 0) / attempts.length) * 100) / 100 : 0,
           recentNotes: employee.employeeNotes.length,
-          lastActivity: attempts.length > 0 ? attempts[0].createdAt : employee.updatedAt
+          lastActivity: attempts.length > 0 ? attempts[0].startedAt : employee.updatedAt
         }
       }
     }) : employees

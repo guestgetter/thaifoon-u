@@ -71,7 +71,7 @@ export async function GET(
     // Calculate averages and attempt numbers
     quizStats.forEach(stats => {
       // Sort attempts by date to get correct order
-      stats.attempts.sort((a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime())
+      stats.attempts.sort((a: { startedAt: Date }, b: { startedAt: Date }) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime())
       
       // Find first passing attempt
       for (let i = 0; i < stats.attempts.length; i++) {
