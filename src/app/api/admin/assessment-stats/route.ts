@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId')
 
     // Get overall assessment statistics
-    const whereClause: any = {}
+    const whereClause: { quizId?: string; userId?: string } = {}
     if (quizId) whereClause.quizId = quizId
     if (userId) whereClause.userId = userId
 
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
 
     // Calculate average scores and finalize stats
     const finalStats = Array.from(userQuizStats.values()).map(stats => {
-      stats.averageScore = stats.attempts.reduce((sum: number, a: any) => sum + a.score, 0) / stats.attempts.length
+      stats.averageScore = stats.attempts.reduce((sum: number, a: { score: number }) => sum + a.score, 0) / stats.attempts.length
       stats.bestScore = Math.round(stats.bestScore * 100) / 100
       stats.averageScore = Math.round(stats.averageScore * 100) / 100
       return stats

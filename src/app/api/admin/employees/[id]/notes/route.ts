@@ -18,7 +18,7 @@ export async function GET(
     const type = searchParams.get('type')
     const limit = searchParams.get('limit')
 
-    const whereClause: any = { employeeId }
+    const whereClause: { employeeId: string; type?: string } = { employeeId }
     if (type) whereClause.type = type
 
     const notes = await prisma.employeeNote.findMany({

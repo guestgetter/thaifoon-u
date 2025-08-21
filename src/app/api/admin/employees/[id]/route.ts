@@ -73,7 +73,7 @@ export async function GET(
 
     // Calculate averages
     quizStats.forEach(stats => {
-      stats.averageScore = stats.attempts.reduce((sum: number, a: any) => sum + a.score, 0) / stats.attempts.length
+      stats.averageScore = stats.attempts.reduce((sum: number, a: { score: number }) => sum + a.score, 0) / stats.attempts.length
       stats.bestScore = Math.round(stats.bestScore * 100) / 100
       stats.averageScore = Math.round(stats.averageScore * 100) / 100
     })
@@ -81,7 +81,7 @@ export async function GET(
     const assessmentStats = Array.from(quizStats.values())
 
     // Calculate note statistics
-    const notesByType = employee.employeeNotes.reduce((acc: any, note) => {
+    const notesByType = employee.employeeNotes.reduce((acc: Record<string, number>, note) => {
       acc[note.type] = (acc[note.type] || 0) + 1
       return acc
     }, {})

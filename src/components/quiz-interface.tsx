@@ -34,14 +34,14 @@ interface AttemptStats {
 
 interface QuizInterfaceProps {
   quiz: Quiz
-  onComplete?: (result: any) => void
+  onComplete?: (result: { score: number; passed: boolean; attemptNumber: number; correctAnswers: number; totalQuestions: number; attempt: { timeTaken?: number } }) => void
 }
 
 export default function QuizInterface({ quiz, onComplete }: QuizInterfaceProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [submitted, setSubmitted] = useState(false)
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<{ score: number; passed: boolean; attemptNumber: number; correctAnswers: number; totalQuestions: number; attempt: { timeTaken?: number } } | null>(null)
   const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState<AttemptStats | null>(null)
   const [startTime, setStartTime] = useState<Date>(new Date())
@@ -50,7 +50,7 @@ export default function QuizInterface({ quiz, onComplete }: QuizInterfaceProps) 
     // Load previous attempt statistics
     loadAttemptStats()
     setStartTime(new Date())
-  }, [quiz.id])
+  }, [quiz.id, loadAttemptStats])
 
   const loadAttemptStats = async () => {
     try {

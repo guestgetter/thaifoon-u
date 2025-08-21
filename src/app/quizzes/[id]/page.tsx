@@ -33,7 +33,7 @@ export default function QuizPage() {
     if (quizId) {
       loadQuiz()
     }
-  }, [quizId])
+  }, [quizId, loadQuiz])
 
   const loadQuiz = async () => {
     try {
@@ -54,7 +54,7 @@ export default function QuizPage() {
     }
   }
 
-  const handleQuizComplete = (result: any) => {
+  const handleQuizComplete = (result: { score: number; passed: boolean; attemptNumber: number; correctAnswers: number; totalQuestions: number; attempt: { timeTaken?: number } }) => {
     console.log('Quiz completed:', result)
     // You can add additional logic here, like redirecting or updating progress
   }

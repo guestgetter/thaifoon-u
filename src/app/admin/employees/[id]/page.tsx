@@ -55,7 +55,7 @@ interface Employee {
   }>
   assessmentStats: Array<{
     quiz: { id: string, title: string }
-    attempts: any[]
+    attempts: Array<{ score: number, passed: boolean, attemptNumber: number, completedAt: string }>
     totalAttempts: number
     passed: boolean
     attemptsToPass: number | null
@@ -76,13 +76,13 @@ export default function EmployeeProfilePage() {
   const employeeId = params.id as string
   const [employee, setEmployee] = useState<Employee | null>(null)
   const [loading, setLoading] = useState(true)
-  const [showNoteForm, setShowNoteForm] = useState(false)
+  const [, setShowNoteForm] = useState(false)
 
   useEffect(() => {
     if (employeeId && session?.user?.role === 'ADMIN') {
       loadEmployee()
     }
-  }, [employeeId, session])
+  }, [employeeId, session, loadEmployee])
 
   const loadEmployee = async () => {
     try {

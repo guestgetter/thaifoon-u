@@ -12,7 +12,7 @@ import { Calendar, Clock, AlertTriangle, CheckCircle, X } from 'lucide-react'
 interface EmployeeNoteFormProps {
   employeeId: string
   employeeName: string
-  onSave: (note: any) => void
+  onSave: (note: { id: string; type: string; priority: string; title: string; content: string; isPrivate: boolean; followUpDate?: string; createdAt: string; createdBy: { name: string; email: string } }) => void
   onCancel: () => void
 }
 
