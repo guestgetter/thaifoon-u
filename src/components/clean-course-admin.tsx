@@ -51,7 +51,7 @@ interface Lesson {
   order: number
 }
 
-type View = 'list' | 'course-structure' | 'lesson-editor'
+type View = 'list' | 'course-structure' | 'lesson-editor' | 'course-content-editor'
 
 interface ViewState {
   view: View

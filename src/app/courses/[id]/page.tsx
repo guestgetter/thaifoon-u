@@ -27,17 +27,21 @@ interface Course {
     title: string
     description: string | null
     orderIndex: number
-    lessons: Array<{
-      id: string
-      title: string
-      content: string
-      contentType: string
-      videoUrl: string | null
-      fileUrl: string | null
-      duration: number | null
-      orderIndex: number
-      isRequired: boolean
-    }>
+          lessons: Array<{
+        id: string
+        title: string
+        content: string
+        contentType: string
+        videoUrl: string | null
+        fileUrl: string | null
+        duration: number | null
+        orderIndex: number
+        isRequired: boolean
+        userProgress: Array<{
+          isCompleted: boolean
+          progress: number
+        }>
+      }>
   }>
 }
 
@@ -96,6 +100,12 @@ export default function CoursePage() {
   const totalDuration = course.modules.reduce((total, module) => 
     total + module.lessons.reduce((moduleTotal, lesson) => moduleTotal + (lesson.duration || 0), 0), 0
   )
+  
+  // Calculate progress
+  const completedLessons = course.modules.reduce((total, module) => 
+    total + module.lessons.filter(lesson => lesson.userProgress?.[0]?.isCompleted).length, 0
+  )
+  const progressPercentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0
 
   const startCourse = () => {
     // Find the first lesson in the first module
@@ -144,6 +154,25 @@ export default function CoursePage() {
                   <span>Created by {course.createdBy.name}</span>
                 </div>
               </div>
+              
+              {/* Progress Display */}
+              {progressPercentage > 0 && (
+                <div className="mt-6 p-4 bg-white bg-opacity-10 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium">Your Progress</span>
+                    <span className="text-sm">{completedLessons}/{totalLessons} lessons</span>
+                  </div>
+                  <div className="w-full bg-white bg-opacity-20 rounded-full h-2">
+                    <div
+                      className="bg-white h-2 rounded-full transition-all"
+                      style={{ width: `${progressPercentage}%` }}
+                    />
+                  </div>
+                  <div className="text-right mt-1">
+                    <span className="text-sm font-bold">{progressPercentage}% Complete</span>
+                  </div>
+                </div>
+              )}
             </div>
             
             <div className="lg:col-span-1">
@@ -184,8 +213,16 @@ export default function CoursePage() {
                       .map((lesson, lessonIndex) => (
                         <div key={lesson.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                           <div className="flex items-center gap-4">
-                            <span className="flex items-center justify-center w-6 h-6 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">
-                              {lessonIndex + 1}
+                            <span className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${
+                              lesson.userProgress?.[0]?.isCompleted 
+                                ? 'bg-green-100 text-green-600' 
+                                : 'bg-gray-100 text-gray-600'
+                            }`}>
+                              {lesson.userProgress?.[0]?.isCompleted ? (
+                                <CheckCircle className="h-4 w-4" />
+                              ) : (
+                                lessonIndex + 1
+                              )}
                             </span>
                             <div>
                               <h4 className="font-medium text-gray-900">{lesson.title}</h4>

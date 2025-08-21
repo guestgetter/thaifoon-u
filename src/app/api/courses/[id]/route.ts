@@ -30,6 +30,13 @@ export async function GET(
         modules: {
           include: {
             lessons: {
+              include: {
+                userProgress: {
+                  where: {
+                    userId: session.user.id
+                  }
+                }
+              },
               orderBy: {
                 orderIndex: 'asc',
               },
@@ -38,6 +45,11 @@ export async function GET(
           orderBy: {
             orderIndex: 'asc',
           },
+        },
+        userProgress: {
+          where: {
+            userId: session.user.id
+          }
         },
       },
     })
