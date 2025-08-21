@@ -65,14 +65,23 @@ export async function GET(
       stats.totalAttempts++
       stats.bestScore = Math.max(stats.bestScore, attempt.score)
       
-      if (attempt.passed && stats.attemptsToPass === null) {
-        stats.attemptsToPass = attempt.attemptNumber
-        stats.passed = true
-      }
+      // Will calculate attempt numbers after all attempts are collected
     })
 
-    // Calculate averages
+    // Calculate averages and attempt numbers
     quizStats.forEach(stats => {
+      // Sort attempts by date to get correct order
+      stats.attempts.sort((a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime())
+      
+      // Find first passing attempt
+      for (let i = 0; i < stats.attempts.length; i++) {
+        if (stats.attempts[i].passed && stats.attemptsToPass === null) {
+          stats.attemptsToPass = i + 1 // Attempt number (1-based)
+          stats.passed = true
+          break
+        }
+      }
+      
       stats.averageScore = stats.attempts.reduce((sum: number, a: { score: number }) => sum + a.score, 0) / stats.attempts.length
       stats.bestScore = Math.round(stats.bestScore * 100) / 100
       stats.averageScore = Math.round(stats.averageScore * 100) / 100
