@@ -12,7 +12,7 @@ interface Quiz {
   description?: string
   questions: Array<{
     id: string
-    text: string
+    question: string
     answers: Array<{
       id: string
       text: string
