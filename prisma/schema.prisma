@@ -46,6 +46,11 @@ model User {
   createdCourses  Course[] @relation("CourseCreator")
   createdQuizzes  Quiz[]   @relation("QuizCreator")
   createdSOPs     StandardOperatingProcedure[] @relation("SOPCreator")
+  
+  // Employee management
+  employeeProfile EmployeeProfile?
+  employeeNotes   EmployeeNote[]
+  createdNotes    EmployeeNote[] @relation("EmployeeNoteCreator")
 
   @@map("users")
 }
@@ -222,4 +227,44 @@ model UserQuizAttempt {
   quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   
   @@map("user_quiz_attempts")
+}
+
+model EmployeeProfile {
+  id               String    @id @default(cuid())
+  employeeId       String?   // Employee ID number
+  department       String?
+  position         String?
+  hireDate         DateTime?
+  phoneNumber      String?
+  emergencyContact String?
+  emergencyPhone   String?
+  notes            String?   // General notes about the employee
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("employee_profiles")
+}
+
+model EmployeeNote {
+  id             String    @id @default(cuid())
+  type           String    // Type of note (PERFORMANCE_WIN, DISCIPLINARY, etc.)
+  priority       String    @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  title          String
+  content        String
+  isPrivate      Boolean   @default(false) // Whether note is private (not visible to employee)
+  followUpDate   DateTime? // Optional follow-up reminder date
+  isResolved     Boolean   @default(false) // Whether the issue has been resolved
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  employeeId     String    // Reference to the employee (User)
+  employee       User      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  createdById    String
+  createdBy      User      @relation("EmployeeNoteCreator", fields: [createdById], references: [id])
+  
+  @@map("employee_notes")
 }
