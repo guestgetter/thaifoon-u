@@ -50,6 +50,13 @@ export default function FileUpload({
   const [dragOver, setDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const getUploadEndpoint = () => {
+    const target = process.env.NEXT_PUBLIC_UPLOAD_TARGET?.toLowerCase()
+    if (target === 'cloudinary') return '/api/upload/cloudinary'
+    if (target === 's3') return '/api/upload/s3'
+    return '/api/upload'
+  }
+
   const handleUpload = async (file: File) => {
     if (file.size > maxSize * 1024 * 1024) {
       alert(`File size must be less than ${maxSize}MB`)
@@ -63,7 +70,7 @@ export default function FileUpload({
       formData.append('file', file)
       formData.append('type', type)
 
-      const response = await fetch('/api/upload', {
+      const response = await fetch(getUploadEndpoint(), {
         method: 'POST',
         body: formData,
       })

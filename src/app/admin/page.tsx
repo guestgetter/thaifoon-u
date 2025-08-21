@@ -176,14 +176,17 @@ export default function AdminPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                User Management
+                Employee Management
               </CardTitle>
               <CardDescription>
-                Manage user accounts, roles, and permissions
+                Manage employee profiles, performance tracking, and HR records
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <Button asChild className="w-full">
+                <Link href="/admin/employees">Employee Profiles</Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full">
                 <Link href="/admin/users">Manage Users</Link>
               </Button>
               {isAdmin && (
@@ -275,6 +278,9 @@ export default function AdminPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <Button asChild className="w-full">
+                <Link href="/admin/assessments">Assessment Statistics</Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full">
                 <Link href="/admin/analytics">View Analytics</Link>
               </Button>
               <Button asChild variant="outline" className="w-full">
