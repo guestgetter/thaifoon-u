@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       orderBy: [
         { userId: 'asc' },
         { quizId: 'asc' },
-        { attemptNumber: 'asc' }
+        { startedAt: 'asc' }
       ]
     })
 
@@ -69,8 +69,9 @@ export async function GET(request: NextRequest) {
       stats.totalAttempts++
       stats.bestScore = Math.max(stats.bestScore, attempt.score)
       
+      // Calculate attempt number based on order and check if this is first pass
       if (attempt.passed && stats.attemptsToPass === null) {
-        stats.attemptsToPass = attempt.attemptNumber
+        stats.attemptsToPass = stats.attempts.length // This is the attempt number
         stats.firstPassDate = attempt.completedAt
         stats.currentlyPassed = true
       }
