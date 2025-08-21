@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -46,13 +46,7 @@ export default function QuizInterface({ quiz, onComplete }: QuizInterfaceProps) 
   const [stats, setStats] = useState<AttemptStats | null>(null)
   const [startTime, setStartTime] = useState<Date>(new Date())
 
-  useEffect(() => {
-    // Load previous attempt statistics
-    loadAttemptStats()
-    setStartTime(new Date())
-  }, [quiz.id, loadAttemptStats])
-
-  const loadAttemptStats = async () => {
+  const loadAttemptStats = useCallback(async () => {
     try {
       const response = await fetch(`/api/quizzes/${quiz.id}/attempts`)
       if (response.ok) {
@@ -62,7 +56,13 @@ export default function QuizInterface({ quiz, onComplete }: QuizInterfaceProps) 
     } catch (error) {
       console.error('Failed to load attempt stats:', error)
     }
-  }
+  }, [quiz.id])
+
+  useEffect(() => {
+    // Load previous attempt statistics
+    loadAttemptStats()
+    setStartTime(new Date())
+  }, [quiz.id, loadAttemptStats])
 
   const handleAnswerSelect = (questionId: string, answerId: string) => {
     setAnswers(prev => ({

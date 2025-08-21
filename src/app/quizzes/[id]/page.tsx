@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import QuizInterface from '@/components/quiz-interface'
@@ -29,13 +29,7 @@ export default function QuizPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (quizId) {
-      loadQuiz()
-    }
-  }, [quizId, loadQuiz])
-
-  const loadQuiz = async () => {
+  const loadQuiz = useCallback(async () => {
     try {
       const response = await fetch(`/api/quizzes/${quizId}`)
       if (response.ok) {
@@ -52,7 +46,13 @@ export default function QuizPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [quizId])
+
+  useEffect(() => {
+    if (quizId) {
+      loadQuiz()
+    }
+  }, [quizId, loadQuiz])
 
   const handleQuizComplete = (result: { score: number; passed: boolean; attemptNumber: number; correctAnswers: number; totalQuestions: number; attempt: { timeTaken?: number } }) => {
     console.log('Quiz completed:', result)

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -78,13 +78,7 @@ export default function EmployeeProfilePage() {
   const [loading, setLoading] = useState(true)
   const [, setShowNoteForm] = useState(false)
 
-  useEffect(() => {
-    if (employeeId && session?.user?.role === 'ADMIN') {
-      loadEmployee()
-    }
-  }, [employeeId, session, loadEmployee])
-
-  const loadEmployee = async () => {
+  const loadEmployee = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/employees/${employeeId}`)
       if (response.ok) {
@@ -96,7 +90,13 @@ export default function EmployeeProfilePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [employeeId])
+
+  useEffect(() => {
+    if (employeeId && session?.user?.role === 'ADMIN') {
+      loadEmployee()
+    }
+  }, [employeeId, session?.user?.role, loadEmployee])
 
   const getNoteTypeColor = (type: string) => {
     const colors: Record<string, string> = {
