@@ -188,7 +188,7 @@ ${sop.content}
           </CardHeader>
 
           <CardContent className="p-8">
-            <div className="prose prose-gray prose-lg max-w-none prose-headings:text-gray-900 prose-strong:text-gray-900">
+            <div className="sop-content">
               <div 
                 className="text-gray-800 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: sop.content }}

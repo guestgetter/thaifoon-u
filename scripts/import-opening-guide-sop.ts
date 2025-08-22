@@ -29,37 +29,43 @@ async function main() {
     throw new Error('No admin user found. Please run the seed script first.')
   }
 
-  // Create the comprehensive SOP content
+  // Create the comprehensive SOP content with better formatting
   const sopContent = `
-<h2>BEFORE STARTING WORK</h2>
+<h2>🕐 BEFORE STARTING WORK</h2>
 
-<h3>Punctuality:</h3>
+<div class="section-intro">
+<p>Complete these essential steps before beginning any kitchen tasks. These requirements ensure food safety, hygiene standards, and operational readiness.</p>
+</div>
+
+<h3>⏰ Punctuality</h3>
 <ul>
-  <li>Arrive on time and be ready to work.</li>
+  <li class="checkpoint">Arrive on time and be ready to work</li>
 </ul>
 
-<h3>Hygiene:</h3>
+<h3>🧼 Hygiene</h3>
 <ul>
-  <li>Wash your hands with soap before starting work.</li>
-  <li>Wear a hairnet before entering the kitchen.</li>
+  <li class="checkpoint">Wash your hands with soap before starting work</li>
+  <li class="checkpoint">Wear a hairnet before entering the kitchen</li>
 </ul>
 
-<h3>Clean Uniform:</h3>
+<h3>👕 Clean Uniform</h3>
 <ul>
-  <li><strong>You must be in a clean uniform.</strong> Failure to wear a clean uniform will result in a warning.</li>
+  <li class="checkpoint critical"><strong>You must be in a clean uniform.</strong> Failure to wear a clean uniform will result in a warning.</li>
 </ul>
 
-<h2>Opening List</h2>
-<h3>10:00 – 10:45 AM (45 Minutes)</h3>
+<h2>📋 Opening Checklist</h2>
+<div class="time-block">
+  <h3>🕙 10:00 – 10:45 AM (45 Minutes)</h3>
+</div>
 
-<h4>1. First Person</h4>
-<ul>
-  <li>☐ Turn on the hood and fan.</li>
-  <li>☐ Turn on the fryer (350 degrees Fahrenheit) and Unox (500 F) / MerryChef (525 F)</li>
-  <li>☐ Wash and rinse rice x2. Boil water to cook rice; 4 x 1kg/1L container cups of rice and 3.5 1kg/1L cups of water</li>
-  <li>☐ Confirm protein level, move the required amount of frozen protein from the freezer to the fridge to maintain your par level. Refer to par level.</li>
-  <li>☐ If you need to defrost protein from the fridge for prep, start defrosting it under running water. Refer to par level. <em>(Average consumption is 4-6 bags of chicken and 1-2 bags of beef /day).</em></li>
-  <li>☐ <strong>Note: The opening staff needs to do a taste, smell and visual check of all produce, sauces and ingredients before service. Remove any items that have gone bad or spoiled.</strong></li>
+<h4>1️⃣ First Person Tasks</h4>
+<ul class="checklist">
+  <li class="checkpoint">Turn on the hood and fan</li>
+  <li class="checkpoint">Turn on the fryer (350°F) and Unox (500°F) / MerryChef (525°F)</li>
+  <li class="checkpoint">Wash and rinse rice x2. Boil water to cook rice; 4 x 1kg/1L container cups of rice and 3.5 1kg/1L cups of water</li>
+  <li class="checkpoint">Confirm protein level, move the required amount of frozen protein from the freezer to the fridge to maintain your par level. Refer to par level.</li>
+  <li class="checkpoint">If you need to defrost protein from the fridge for prep, start defrosting it under running water. Refer to par level. <em>(Average consumption is 4-6 bags of chicken and 1-2 bags of beef /day)</em></li>
+  <li class="checkpoint critical"><strong>CRITICAL:</strong> The opening staff needs to do a taste, smell and visual check of all produce, sauces and ingredients before service. Remove any items that have gone bad or spoiled.</li>
 </ul>
 
 <h4>2. Set Up the Appetizer Line (Station 1):</h4>
