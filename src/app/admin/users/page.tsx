@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Edit2, Trash2, UserPlus } from 'lucide-react'
+import UserEditDialog from '@/components/user-edit-dialog'
 
 interface User {
   id: string
@@ -239,9 +240,7 @@ export default function AdminUsersPage() {
                       {user.role}
                     </span>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
+                      <UserEditDialog userId={user.id} onUserUpdated={fetchUsers} />
                       <Button 
                         size="sm" 
                         variant="destructive" 
