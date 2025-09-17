@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import CourseCreationDialog from "@/components/course-creation-dialog"
-import CourseEditDialog from "@/components/course-edit-dialog"
+// Removed CourseEditDialog to make the pencil Edit action open the content editor directly
 import CourseStructureView from "@/components/course-structure-view"
 import LessonEditor from "@/components/lesson-editor"
 import CourseContentEditor from "@/components/course-content-editor"
@@ -365,7 +365,13 @@ export default function CleanCourseAdmin() {
                     <Plus className="h-4 w-4 mr-1" />
                     Content
                   </Button>
-                  <CourseEditDialog courseId={course.id} onCourseUpdated={fetchCourses} />
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setViewState({ view: 'course-content-editor', selectedCourseId: course.id })}
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
