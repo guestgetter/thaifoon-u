@@ -91,7 +91,13 @@ export async function PUT(
     }
 
     // Prepare update data
-    const updateData: any = {}
+    type UpdateData = Partial<{
+      name: string
+      email: string
+      role: 'ADMIN' | 'MANAGER' | 'STAFF'
+      password: string
+    }>
+    const updateData: UpdateData = {}
     if (name) updateData.name = name
     if (email) updateData.email = email
     if (role) updateData.role = role

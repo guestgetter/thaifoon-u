@@ -76,7 +76,13 @@ export default function UserEditDialog({ userId, onUserUpdated }: UserEditDialog
 
     try {
       // Only send fields that have values
-      const updateData: any = {}
+      type UpdateData = Partial<{
+        name: string
+        email: string
+        role: 'ADMIN' | 'MANAGER' | 'STAFF'
+        password: string
+      }>
+      const updateData: UpdateData = {}
       if (formData.name.trim()) updateData.name = formData.name.trim()
       if (formData.email.trim()) updateData.email = formData.email.trim()
       if (formData.role) updateData.role = formData.role
