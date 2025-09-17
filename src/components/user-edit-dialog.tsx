@@ -28,13 +28,15 @@ interface UserEditDialogProps {
   onUserUpdated: () => void
 }
 
+type Role = 'ADMIN' | 'MANAGER' | 'STAFF'
+
 export default function UserEditDialog({ userId, onUserUpdated }: UserEditDialogProps) {
   const { data: session } = useSession()
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(false)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{ name: string; email: string; role: Role | ''; password: string }>({
     name: '',
     email: '',
     role: '',
@@ -57,7 +59,7 @@ export default function UserEditDialog({ userId, onUserUpdated }: UserEditDialog
         setFormData({
           name: userData.name,
           email: userData.email,
-          role: userData.role,
+          role: userData.role as Role,
           password: '' // Always empty for security
         })
       } else {
@@ -76,16 +78,13 @@ export default function UserEditDialog({ userId, onUserUpdated }: UserEditDialog
 
     try {
       // Only send fields that have values
-      type UpdateData = Partial<{
-        name: string
-        email: string
-        role: 'ADMIN' | 'MANAGER' | 'STAFF'
-        password: string
-      }>
+      type UpdateData = Partial<{ name: string; email: string; role: Role; password: string }>
       const updateData: UpdateData = {}
       if (formData.name.trim()) updateData.name = formData.name.trim()
       if (formData.email.trim()) updateData.email = formData.email.trim()
-      if (formData.role) updateData.role = formData.role
+      if (formData.role === 'ADMIN' || formData.role === 'MANAGER' || formData.role === 'STAFF') {
+        updateData.role = formData.role
+      }
       if (formData.password.trim()) updateData.password = formData.password.trim()
 
       const response = await fetch(`/api/admin/users/${userId}`, {
@@ -176,8 +175,8 @@ export default function UserEditDialog({ userId, onUserUpdated }: UserEditDialog
                   Role
                 </label>
                 <Select 
-                  value={formData.role} 
-                  onValueChange={(value) => setFormData({ ...formData, role: value })}
+                  value={formData.role}
+                  onValueChange={(value) => setFormData({ ...formData, role: value as Role })}
                   disabled={!canEditRole}
                 >
                   <SelectTrigger>
