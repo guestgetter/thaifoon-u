@@ -11,11 +11,24 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const categories = await prisma.category.findMany({
+    let categories = await prisma.category.findMany({
       orderBy: {
         name: 'asc',
       },
     })
+
+    // Ensure the default "Onboarding" category exists so admins always see it
+    const hasOnboarding = categories.some(c => c.name === 'Onboarding')
+    if (!hasOnboarding && session.user.role === 'ADMIN') {
+      await prisma.category.create({
+        data: {
+          name: 'Onboarding',
+          description: 'Start here. Thaifoon culture, standards, and first steps.',
+          color: '#0ea5e9',
+        },
+      })
+      categories = await prisma.category.findMany({ orderBy: { name: 'asc' } })
+    }
 
     return NextResponse.json(categories)
   } catch (error) {
