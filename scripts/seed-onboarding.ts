@@ -48,7 +48,7 @@ async function main() {
     orderIndex: number,
     title: string,
     description: string,
-    lessons: Array<{ title: string; html: string; duration?: number }>,
+    lessons: Array<{ title: string; html: string; duration?: number; contentType?: 'TEXT' | 'VIDEO' | 'MIXED'; videoUrl?: string }>,
   ) {
     const mod = await prisma.module.create({
       data: { title, description, orderIndex, courseId },
@@ -61,7 +61,8 @@ async function main() {
         data: {
           title: l.title,
           content: l.html,
-          contentType: 'TEXT',
+          contentType: l.contentType ?? 'TEXT',
+          videoUrl: l.videoUrl ?? null,
           duration: l.duration ?? 5,
           orderIndex: i + 1,
           moduleId: mod.id,
@@ -107,19 +108,27 @@ async function main() {
   const existingModules = await prisma.module.findMany({ where: { courseId: course.id } })
   if (existingModules.length === 0) {
     await createModule(course.id, 1, 'Welcome', 'Start here', [
-      { title: 'Welcome', html: welcomeHtml },
+      { title: 'Welcome to Thaifoon (Video)', html: welcomeHtml + '<p>Upload the welcome video here.</p>', contentType: 'VIDEO' },
+      { title: 'Our Story (Video)', html: '<h2>Our Story</h2><p>A quick intro to how Thaifoon began.</p><p>Upload the story video here.</p>', contentType: 'VIDEO' },
+      { title: 'Week One Overview', html: '<h2>Your First Week</h2><p>Shifts, expectations, and who to ask for help.</p>' },
     ])
 
     await createModule(course.id, 2, 'Vision & Values', 'What great hospitality means at Thaifoon', [
-      { title: 'Our Vision & Values', html: valuesHtml },
+      { title: 'Our Vision (Video)', html: valuesHtml + '<p>Upload the vision video here.</p>', contentType: 'VIDEO' },
+      { title: 'Our Values', html: '<h2>Values in Action</h2><p>Examples of how we live our values daily.</p>' },
+      { title: 'Hospitality Standards (Video)', html: '<h2>Standards</h2><p>Warm greetings, timing, accuracy, and recovery.</p><p>Upload standards video here.</p>', contentType: 'VIDEO' },
     ])
 
     await createModule(course.id, 3, 'Excellence', 'The small details that create big experiences', [
-      { title: 'Excellence in the Details', html: excellenceHtml },
+      { title: 'Uniform & Appearance (Video)', html: '<h2>Uniform & Appearance</h2><p>Look sharp, feel sharp.</p><p>Upload uniform video here.</p>', contentType: 'VIDEO' },
+      { title: 'Station Readiness (Video)', html: '<h2>Station Ready</h2><p>Setup, labels, temps, and sanitation.</p><p>Upload station readiness video here.</p>', contentType: 'VIDEO' },
+      { title: 'Guest Greeting Basics (Video)', html: '<h2>Greeting Basics</h2><p>Smile, eye contact, and ownership.</p><p>Upload greeting video here.</p>', contentType: 'VIDEO' },
     ])
 
     await createModule(course.id, 4, 'Next Steps', 'What to do after onboarding', [
-      { title: 'Your First Week', html: nextStepsHtml },
+      { title: 'Your Training Path', html: nextStepsHtml },
+      { title: 'Where to Find SOPs', html: '<h2>SOPs</h2><p>Find procedures under the SOPs section and your station category.</p>' },
+      { title: 'First Assessment', html: '<h2>Assessment</h2><p>Complete the Food Safety basics assessment this week.</p>' },
     ])
   }
 
