@@ -22,19 +22,25 @@ async function main() {
     },
   })
 
-  // Upsert course
-  const course = await prisma.course.upsert({
-    where: { title: 'Welcome to Thaifoon' },
-    update: { categoryId: category.id, isPublished: true },
-    create: {
-      title: 'Welcome to Thaifoon',
-      description: 'Start your journey with Thaifoon Hospitality. Learn our story, values, and standards of excellence.',
-      thumbnail: '/course-thumbnails/onboarding.jpg',
-      isPublished: true,
-      categoryId: category.id,
-      createdById: admin.id,
-    },
-  })
+  // Find or create course (title is not unique in schema)
+  let course = await prisma.course.findFirst({ where: { title: 'Welcome to Thaifoon' } })
+  if (!course) {
+    course = await prisma.course.create({
+      data: {
+        title: 'Welcome to Thaifoon',
+        description: 'Start your journey with Thaifoon Hospitality. Learn our story, values, and standards of excellence.',
+        thumbnail: '/course-thumbnails/onboarding.jpg',
+        isPublished: true,
+        categoryId: category.id,
+        createdById: admin.id,
+      },
+    })
+  } else if (course.categoryId !== category.id || !course.isPublished) {
+    course = await prisma.course.update({
+      where: { id: course.id },
+      data: { categoryId: category.id, isPublished: true },
+    })
+  }
 
   // Helper to create module with ordered lessons
   async function createModule(
@@ -44,10 +50,8 @@ async function main() {
     description: string,
     lessons: Array<{ title: string; html: string; duration?: number }>,
   ) {
-    const mod = await prisma.module.upsert({
-      where: { id: `${courseId}-${orderIndex}` },
-      update: { title, description, orderIndex },
-      create: { title, description, orderIndex, courseId },
+    const mod = await prisma.module.create({
+      data: { title, description, orderIndex, courseId },
     })
 
     // Ensure deterministic order
