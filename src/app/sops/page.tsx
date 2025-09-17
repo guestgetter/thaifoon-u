@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import { FileText, Search, Calendar, Tag, Eye } from "lucide-react"
+import { FileText, Search, Calendar, Tag, Eye, Edit2 } from "lucide-react"
 import MainLayout from "@/components/layout/main-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import SOPEditDialog from "@/components/sop-edit-dialog"
 
 interface SOP {
   id: string
@@ -124,8 +125,16 @@ export default function SOPsPage() {
                   >
                     {sop.category.name}
                   </div>
-                  <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                    v{sop.version}
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                      v{sop.version}
+                    </div>
+                    {session?.user?.role === 'ADMIN' && (
+                      <SOPEditDialog
+                        sopId={sop.id}
+                        onSOPUpdated={fetchSOPs}
+                      />
+                    )}
                   </div>
                 </div>
                 <CardTitle className="text-xl">{sop.title}</CardTitle>

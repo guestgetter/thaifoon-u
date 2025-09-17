@@ -6,7 +6,8 @@ import { useSession } from 'next-auth/react'
 import MainLayout from '@/components/layout/main-layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Calendar, User, Tag, FileText, Download, Printer, Eye } from 'lucide-react'
+import { ArrowLeft, Calendar, User, Tag, FileText, Download, Printer, Eye, Edit2 } from 'lucide-react'
+import SOPEditDialog from '@/components/sop-edit-dialog'
 
 interface SOP {
   id: string
@@ -146,6 +147,12 @@ ${sop.content}
               <Printer className="h-4 w-4 mr-2" />
               Print
             </Button>
+            {session?.user?.role === 'ADMIN' && sop?.id && (
+              <SOPEditDialog sopId={sop.id} onSOPUpdated={() => {
+                // refresh the current SOP details after update
+                window.location.reload()
+              }} />
+            )}
           </div>
         </div>
 
