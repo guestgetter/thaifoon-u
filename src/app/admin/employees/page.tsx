@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import MainLayout from '@/components/layout/main-layout'
 import { 
   User, 
   Mail, 
@@ -148,6 +149,7 @@ export default function EmployeesPage() {
   }
 
   return (
+    <MainLayout>
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-6">
@@ -328,5 +330,6 @@ export default function EmployeesPage() {
         </div>
       )}
     </div>
+    </MainLayout>
   )
 }

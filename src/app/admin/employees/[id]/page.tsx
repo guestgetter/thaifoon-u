@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import MainLayout from '@/components/layout/main-layout'
 import { 
   User, 
   Mail, 
@@ -76,7 +77,8 @@ export default function EmployeeProfilePage() {
   const employeeId = params.id as string
   const [employee, setEmployee] = useState<Employee | null>(null)
   const [loading, setLoading] = useState(true)
-  const [, setShowNoteForm] = useState(false)
+  const [showNoteForm, setShowNoteForm] = useState(false)
+  const [showEditForm, setShowEditForm] = useState(false)
 
   const loadEmployee = useCallback(async () => {
     try {
@@ -159,6 +161,7 @@ export default function EmployeeProfilePage() {
   }
 
   return (
+    <MainLayout>
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-6">
@@ -168,7 +171,7 @@ export default function EmployeeProfilePage() {
             <p className="text-gray-600">{employee.employeeProfile?.position || 'Staff Member'}</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => setShowEditForm(true)}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Profile
             </Button>
@@ -470,6 +473,158 @@ export default function EmployeeProfilePage() {
           </Card>
         </TabsContent>
       </Tabs>
+      {/* Modals */}
+      {showEditForm && (
+        <EditProfileDialog 
+          employee={employee}
+          onClose={() => setShowEditForm(false)}
+          onSaved={() => { setShowEditForm(false); loadEmployee(); }}
+        />
+      )}
+      {showNoteForm && (
+        <AddNoteDialog 
+          employeeId={employee.id}
+          onClose={() => setShowNoteForm(false)}
+          onSaved={() => { setShowNoteForm(false); loadEmployee(); }}
+        />
+      )}
+    </div>
+    </MainLayout>
+  )
+}
+
+// Inline lightweight dialogs (kept minimal to avoid new files)
+function EditProfileDialog({ employee, onClose, onSaved }: { employee: any; onClose: () => void; onSaved: () => void }) {
+  const [form, setForm] = useState({
+    name: employee.name || '',
+    email: employee.email || '',
+    role: employee.role || 'STAFF',
+    employeeId: employee.employeeProfile?.employeeId || '',
+    department: employee.employeeProfile?.department || '',
+    position: employee.employeeProfile?.position || '',
+    hireDate: employee.employeeProfile?.hireDate ? employee.employeeProfile.hireDate.substring(0,10) : '',
+    phoneNumber: employee.employeeProfile?.phoneNumber || '',
+    emergencyContact: employee.employeeProfile?.emergencyContact || '',
+    emergencyPhone: employee.employeeProfile?.emergencyPhone || '',
+    notes: employee.employeeProfile?.notes || '',
+  })
+
+  async function save() {
+    const payload = {
+      user: { name: form.name, email: form.email, role: form.role },
+      profile: {
+        employeeId: form.employeeId,
+        department: form.department,
+        position: form.position,
+        hireDate: form.hireDate || null,
+        phoneNumber: form.phoneNumber,
+        emergencyContact: form.emergencyContact,
+        emergencyPhone: form.emergencyPhone,
+        notes: form.notes,
+      }
+    }
+    const res = await fetch(`/api/admin/employees/${employee.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    if (res.ok) onSaved(); else alert('Failed to save profile')
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg w-full max-w-2xl p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Edit Profile</h3>
+          <button onClick={onClose} className="text-gray-500">✕</button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input className="border p-2 rounded" placeholder="Name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} />
+          <input className="border p-2 rounded" placeholder="Email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} />
+          <select className="border p-2 rounded" value={form.role} onChange={e=>setForm({...form,role:e.target.value})}>
+            <option value="ADMIN">ADMIN</option>
+            <option value="MANAGER">MANAGER</option>
+            <option value="STAFF">STAFF</option>
+          </select>
+          <input className="border p-2 rounded" placeholder="Employee ID" value={form.employeeId} onChange={e=>setForm({...form,employeeId:e.target.value})} />
+          <input className="border p-2 rounded" placeholder="Department" value={form.department} onChange={e=>setForm({...form,department:e.target.value})} />
+          <input className="border p-2 rounded" placeholder="Position" value={form.position} onChange={e=>setForm({...form,position:e.target.value})} />
+          <input type="date" className="border p-2 rounded" value={form.hireDate} onChange={e=>setForm({...form,hireDate:e.target.value})} />
+          <input className="border p-2 rounded" placeholder="Phone" value={form.phoneNumber} onChange={e=>setForm({...form,phoneNumber:e.target.value})} />
+          <input className="border p-2 rounded" placeholder="Emergency Contact" value={form.emergencyContact} onChange={e=>setForm({...form,emergencyContact:e.target.value})} />
+          <input className="border p-2 rounded" placeholder="Emergency Phone" value={form.emergencyPhone} onChange={e=>setForm({...form,emergencyPhone:e.target.value})} />
+          <textarea className="border p-2 rounded md:col-span-2" placeholder="Notes" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} />
+        </div>
+        <div className="flex justify-end gap-2">
+          <button className="px-4 py-2 border rounded" onClick={onClose}>Cancel</button>
+          <button className="px-4 py-2 bg-black text-white rounded" onClick={save}>Save</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AddNoteDialog({ employeeId, onClose, onSaved }: { employeeId: string; onClose: () => void; onSaved: () => void }) {
+  const [form, setForm] = useState({
+    type: 'GENERAL',
+    priority: 'MEDIUM',
+    title: '',
+    content: '',
+    isPrivate: false,
+    followUpDate: ''
+  })
+
+  async function save() {
+    const res = await fetch(`/api/admin/employees/${employeeId}/notes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...form,
+        followUpDate: form.followUpDate || null
+      })
+    })
+    if (res.ok) onSaved(); else alert('Failed to add note')
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg w-full max-w-xl p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Add Note</h3>
+          <button onClick={onClose} className="text-gray-500">✕</button>
+        </div>
+        <div className="grid grid-cols-1 gap-3">
+          <input className="border p-2 rounded" placeholder="Title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} />
+          <textarea className="border p-2 rounded min-h-[120px]" placeholder="Content" value={form.content} onChange={e=>setForm({...form,content:e.target.value})} />
+          <div className="grid grid-cols-2 gap-3">
+            <select className="border p-2 rounded" value={form.type} onChange={e=>setForm({...form,type:e.target.value})}>
+              <option value="GENERAL">GENERAL</option>
+              <option value="PERFORMANCE_WIN">PERFORMANCE_WIN</option>
+              <option value="PERFORMANCE_ISSUE">PERFORMANCE_ISSUE</option>
+              <option value="DISCIPLINARY_VERBAL">DISCIPLINARY_VERBAL</option>
+              <option value="DISCIPLINARY_WRITTEN">DISCIPLINARY_WRITTEN</option>
+            </select>
+            <select className="border p-2 rounded" value={form.priority} onChange={e=>setForm({...form,priority:e.target.value})}>
+              <option value="LOW">LOW</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HIGH">HIGH</option>
+              <option value="URGENT">URGENT</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="checkbox" checked={form.isPrivate} onChange={e=>setForm({...form,isPrivate:e.target.checked})} />
+            <span className="text-sm">Private</span>
+          </div>
+          <div>
+            <label className="text-sm">Follow-up date (optional)</label>
+            <input type="date" className="border p-2 rounded w-full" value={form.followUpDate} onChange={e=>setForm({...form,followUpDate:e.target.value})} />
+          </div>
+        </div>
+        <div className="flex justify-end gap-2">
+          <button className="px-4 py-2 border rounded" onClick={onClose}>Cancel</button>
+          <button className="px-4 py-2 bg-black text-white rounded" onClick={save}>Save Note</button>
+        </div>
+      </div>
     </div>
   )
 }
