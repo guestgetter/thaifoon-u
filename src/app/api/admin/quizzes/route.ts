@@ -38,3 +38,55 @@ export async function GET(request: NextRequest) {
     )
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id || session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await request.json()
+    const { title, description, passingScore, questions } = body
+    if (!title) return NextResponse.json({ error: 'Title is required' }, { status: 400 })
+
+    const quiz = await prisma.quiz.create({
+      data: {
+        title,
+        description: description || null,
+        passingScore: passingScore ?? 70,
+        createdById: session.user.id,
+      }
+    })
+
+    if (Array.isArray(questions)) {
+      for (let i = 0; i < questions.length; i++) {
+        const q = questions[i]
+        const createdQ = await prisma.question.create({
+          data: {
+            quizId: quiz.id,
+            question: q.question || `Question ${i+1}`,
+            type: q.type || 'MULTIPLE_CHOICE',
+            points: q.points || 1,
+            orderIndex: i + 1,
+          }
+        })
+        if (Array.isArray(q.answers)) {
+          await prisma.answer.createMany({
+            data: q.answers.map((a: any, idx: number) => ({
+              questionId: createdQ.id,
+              text: a.text || `Answer ${idx+1}`,
+              isCorrect: !!a.isCorrect,
+              orderIndex: idx + 1,
+            }))
+          })
+        }
+      }
+    }
+
+    return NextResponse.json(quiz, { status: 201 })
+  } catch (error) {
+    console.error('Create quiz error:', error)
+    return NextResponse.json({ error: 'Failed to create quiz' }, { status: 500 })
+  }
+}
