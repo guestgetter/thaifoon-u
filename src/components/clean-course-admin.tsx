@@ -329,7 +329,30 @@ export default function CleanCourseAdmin() {
           <h1 className="text-2xl font-bold text-gray-900">Course Management</h1>
           <p className="text-gray-600">Create and manage your training courses</p>
         </div>
-        <CourseCreationDialog onCourseCreated={fetchCourses} />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              try {
+                const res = await fetch('/api/admin/import/franchise', { method: 'POST' })
+                if (!res.ok) {
+                  const j = await res.json().catch(() => ({}))
+                  alert(j?.error || 'Import failed')
+                  return
+                }
+                await fetchCourses()
+                alert('Franchise Starter Kit imported')
+              } catch (e) {
+                console.error(e)
+                alert('Import failed')
+              }
+            }}
+          >
+            Import Franchise Starter Kit
+          </Button>
+          <CourseCreationDialog onCourseCreated={fetchCourses} />
+        </div>
       </div>
 
       {/* Search */}
