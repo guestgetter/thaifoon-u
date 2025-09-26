@@ -66,6 +66,7 @@ export default function CleanCourseAdmin() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [viewState, setViewState] = useState<ViewState>({ view: 'list' })
+  const [selectedCourseMeta, setSelectedCourseMeta] = useState<Course | null>(null)
 
   useEffect(() => {
     fetchCourses()
@@ -84,6 +85,40 @@ export default function CleanCourseAdmin() {
       setLoading(false)
     }
   }
+  async function fetchCourseMeta(courseId: string) {
+    try {
+      const response = await fetch(`/api/admin/courses/${courseId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setSelectedCourseMeta(data)
+      }
+    } catch (error) {
+      console.error('Error fetching course meta:', error)
+    }
+  }
+
+  async function togglePublish(courseId: string, makePublished: boolean) {
+    try {
+      const response = await fetch(`/api/admin/courses/${courseId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isPublished: makePublished })
+      })
+      if (response.ok) {
+        // Update list view state
+        setCourses(prev => prev.map(c => c.id === courseId ? { ...c, isPublished: makePublished } : c))
+        // Update editor header state if open
+        setSelectedCourseMeta(prev => prev ? { ...prev, isPublished: makePublished } as Course : prev)
+      } else {
+        const err = await response.json().catch(() => ({}))
+        alert(err?.error || 'Failed to update publish state')
+      }
+    } catch (error) {
+      console.error('Publish toggle failed:', error)
+      alert('Failed to update publish state')
+    }
+  }
+
 
   async function fetchCourseWithContent(courseId: string) {
     try {
@@ -222,6 +257,33 @@ export default function CleanCourseAdmin() {
                 ← Back to Courses
               </Button>
               <h1 className="text-xl font-semibold">Course Content Editor</h1>
+              {selectedCourseMeta && (
+                <Badge 
+                  variant={selectedCourseMeta.isPublished ? 'default' : 'secondary'}
+                  className={selectedCourseMeta.isPublished ? 'bg-green-100 text-green-800' : ''}
+                >
+                  {selectedCourseMeta.isPublished ? 'Published' : 'Draft'}
+                </Badge>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {viewState.selectedCourseId && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(`/courses/${viewState.selectedCourseId}`, '_blank')}
+                  >
+                    <Eye className="h-4 w-4 mr-1" /> Preview
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => togglePublish(viewState.selectedCourseId!, !(selectedCourseMeta?.isPublished))}
+                  >
+                    {selectedCourseMeta?.isPublished ? 'Unpublish' : 'Publish'}
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -351,26 +413,28 @@ export default function CleanCourseAdmin() {
                     variant="outline" 
                     size="sm" 
                     className="flex-1"
-                    onClick={() => handleViewCourseStructure(course.id)}
+                    onClick={() => {
+                      setViewState({ view: 'course-content-editor', selectedCourseId: course.id })
+                      fetchCourseMeta(course.id)
+                    }}
                   >
-                    <BookOpen className="h-4 w-4 mr-1" />
-                    Structure
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1"
-                    onClick={() => setViewState({ view: 'course-content-editor', selectedCourseId: course.id })}
-                  >
-                    <Plus className="h-4 w-4 mr-1" />
-                    Content
+                    <Edit2 className="h-4 w-4 mr-1" />
+                    Edit
                   </Button>
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => setViewState({ view: 'course-content-editor', selectedCourseId: course.id })}
+                    onClick={() => window.open(`/courses/${course.id}`, '_blank')}
                   >
-                    <Edit2 className="h-4 w-4" />
+                    <Eye className="h-4 w-4 mr-1" />
+                    Preview
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => togglePublish(course.id, !course.isPublished)}
+                  >
+                    {course.isPublished ? 'Unpublish' : 'Publish'}
                   </Button>
                   <Button
                     variant="outline"
