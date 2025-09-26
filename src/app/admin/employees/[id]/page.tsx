@@ -494,7 +494,7 @@ export default function EmployeeProfilePage() {
 }
 
 // Inline lightweight dialogs (kept minimal to avoid new files)
-function EditProfileDialog({ employee, onClose, onSaved }: { employee: any; onClose: () => void; onSaved: () => void }) {
+function EditProfileDialog({ employee, onClose, onSaved }: { employee: Employee; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState({
     name: employee.name || '',
     email: employee.email || '',
