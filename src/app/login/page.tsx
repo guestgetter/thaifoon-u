@@ -48,14 +48,13 @@ export default function LoginPage() {
       <div className="w-full max-w-lg">
         {/* Logo and Header */}
         <div className="text-center mb-8">
-          <div className="rounded-full p-4 w-24 h-24 mx-auto mb-6 shadow-2xl flex items-center justify-center" style={{ backgroundColor: '#00A650' }}>
+          <div className="bg-black rounded-full p-4 w-24 h-24 mx-auto mb-6 shadow-2xl flex items-center justify-center">
             <Image
-              src="/mint-logo.png"
+              src="/logo.png"
               alt="Thaifoon University"
               width={64}
               height={64}
-              className="object-contain"
-              priority
+              className="object-contain filter invert"
             />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Thaifoon University</h1>

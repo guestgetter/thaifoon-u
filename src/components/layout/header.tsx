@@ -27,16 +27,13 @@ export default function Header() {
         <div className="flex lg:flex-1">
           <Link href="/dashboard" className="-m-1.5 p-1.5">
             <span className="sr-only">Thaifoon University</span>
-            <div className="inline-flex items-center justify-center rounded-md bg-[#00A650] px-2 py-1">
-              <Image
-                className="h-10 w-auto"
-                src="/mint-logo.png"
-                alt="Thaifoon University"
-                width={120}
-                height={40}
-                priority
-              />
-            </div>
+            <Image
+              className="h-10 w-auto"
+              src="/logo.png"
+              alt="Thaifoon University"
+              width={120}
+              height={40}
+            />
           </Link>
         </div>
         
