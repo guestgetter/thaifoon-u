@@ -72,14 +72,17 @@ export async function POST(request: NextRequest) {
           }
         })
         if (Array.isArray(q.answers)) {
-          await prisma.answer.createMany({
-            data: q.answers.map((a: any, idx: number) => ({
-              questionId: createdQ.id,
-              text: a.text || `Answer ${idx+1}`,
-              isCorrect: !!a.isCorrect,
-              orderIndex: idx + 1,
-            }))
-          })
+          type IncomingAnswer = {
+            text?: string
+            isCorrect?: boolean
+          }
+          const answers = (q.answers as IncomingAnswer[]).map((a, idx: number) => ({
+            questionId: createdQ.id,
+            text: a?.text || `Answer ${idx + 1}`,
+            isCorrect: Boolean(a?.isCorrect),
+            orderIndex: idx + 1,
+          }))
+          await prisma.answer.createMany({ data: answers })
         }
       }
     }
