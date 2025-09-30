@@ -48,7 +48,7 @@ export default function LoginPage() {
       <div className="w-full max-w-lg">
         {/* Logo and Header */}
         <div className="text-center mb-8">
-          <div className="bg-black rounded-full p-4 w-24 h-24 mx-auto mb-6 shadow-2xl flex items-center justify-center">
+          <div className="rounded-full p-4 w-24 h-24 mx-auto mb-6 shadow-2xl flex items-center justify-center" style={{ backgroundColor: '#00A650' }}>
             <Image
               src="/mint-logo.png"
               alt="Thaifoon University"
