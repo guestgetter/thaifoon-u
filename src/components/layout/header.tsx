@@ -29,10 +29,11 @@ export default function Header() {
             <span className="sr-only">Thaifoon University</span>
             <Image
               className="h-10 w-auto"
-              src="/logo.png"
+              src="/mint-logo.png"
               alt="Thaifoon University"
               width={120}
               height={40}
+              priority
             />
           </Link>
         </div>
