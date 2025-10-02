@@ -29,7 +29,7 @@ export default function Header() {
             <span className="sr-only">Thaifoon University</span>
             <Image
               className="h-10 w-auto"
-              src="/thaifoon-u-logo (1).png"
+              src="/thaifoon-u-logo.png"
               alt="Thaifoon University"
               width={120}
               height={40}
@@ -103,7 +103,7 @@ export default function Header() {
                 <span className="sr-only">Thaifoon University</span>
                 <Image
                   className="h-8 w-auto"
-                  src="/thaifoon-u-logo (1).png"
+                  src="/thaifoon-u-logo.png"
                   alt="Thaifoon University"
                   width={96}
                   height={32}
