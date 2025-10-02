@@ -50,11 +50,12 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="bg-black rounded-full p-4 w-24 h-24 mx-auto mb-6 shadow-2xl flex items-center justify-center">
             <Image
-              src="/thaifoon-u-logo.png"
+              src="/thaifoon-u-logo-final.png"
               alt="Thaifoon University"
-              width={64}
-              height={64}
-              className="object-contain filter invert"
+              width={96}
+              height={96}
+              className="object-contain"
+              priority
             />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Thaifoon University</h1>

@@ -28,11 +28,12 @@ export default function Header() {
           <Link href="/dashboard" className="-m-1.5 p-1.5">
             <span className="sr-only">Thaifoon University</span>
             <Image
-              className="h-10 w-auto"
-              src="/thaifoon-u-logo.png"
+              className="h-12 w-auto"
+              src="/thaifoon-u-logo-final.png"
               alt="Thaifoon University"
-              width={120}
-              height={40}
+              width={144}
+              height={48}
+              priority
             />
           </Link>
         </div>
@@ -102,11 +103,12 @@ export default function Header() {
               <Link href="/dashboard" className="-m-1.5 p-1.5">
                 <span className="sr-only">Thaifoon University</span>
                 <Image
-                  className="h-8 w-auto"
-                  src="/thaifoon-u-logo.png"
+                  className="h-10 w-auto"
+                  src="/thaifoon-u-logo-final.png"
                   alt="Thaifoon University"
-                  width={96}
-                  height={32}
+                  width={120}
+                  height={40}
+                  priority
                 />
               </Link>
               <Button
