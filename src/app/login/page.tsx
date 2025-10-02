@@ -50,7 +50,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="bg-black rounded-full p-4 w-24 h-24 mx-auto mb-6 shadow-2xl flex items-center justify-center">
             <Image
-              src="/thaifoon-u-logo-final.png"
+              src="/thaifoon-u-logo-white.png"
               alt="Thaifoon University"
               width={96}
               height={96}
