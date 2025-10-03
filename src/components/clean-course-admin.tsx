@@ -431,11 +431,11 @@ export default function CleanCourseAdmin() {
                   <span>by {course.createdBy.name}</span>
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="flex-1"
+                    className="w-full sm:flex-1"
                     onClick={() => {
                       setViewState({ view: 'course-content-editor', selectedCourseId: course.id })
                       fetchCourseMeta(course.id)
@@ -447,6 +447,7 @@ export default function CleanCourseAdmin() {
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="w-full sm:flex-1"
                     onClick={() => window.open(`/courses/${course.id}`, '_blank')}
                   >
                     <Eye className="h-4 w-4 mr-1" />
@@ -455,6 +456,7 @@ export default function CleanCourseAdmin() {
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="w-full sm:flex-1"
                     onClick={() => togglePublish(course.id, !course.isPublished)}
                   >
                     {course.isPublished ? 'Unpublish' : 'Publish'}
@@ -463,7 +465,7 @@ export default function CleanCourseAdmin() {
                     variant="outline"
                     size="sm"
                     onClick={() => deleteCourse(course.id)}
-                    className="text-red-600 hover:text-red-700"
+                    className="w-full sm:w-auto text-red-600 hover:text-red-700"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
