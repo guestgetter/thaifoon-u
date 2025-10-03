@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -38,6 +39,7 @@ interface QuizInterfaceProps {
 }
 
 export default function QuizInterface({ quiz, onComplete }: QuizInterfaceProps) {
+  const router = useRouter()
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [submitted, setSubmitted] = useState(false)
@@ -221,7 +223,19 @@ export default function QuizInterface({ quiz, onComplete }: QuizInterfaceProps) 
               )}
               <Button 
                 variant="outline" 
-                onClick={() => window.history.back()}
+                onClick={() => {
+                  try {
+                    const canGoBack = typeof window !== 'undefined' && window.history.length > 1
+                    const sameOriginReferrer = typeof document !== 'undefined' && document.referrer && new URL(document.referrer).host === window.location.host
+                    if (canGoBack && sameOriginReferrer) {
+                      router.back()
+                    } else {
+                      router.push('/quizzes')
+                    }
+                  } catch (_) {
+                    router.push('/quizzes')
+                  }
+                }}
                 className="flex-1"
               >
                 Back to Course
