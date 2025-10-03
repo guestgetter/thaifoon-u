@@ -206,6 +206,12 @@ export default function LessonPage() {
                   Mark Complete
                 </Button>
               )}
+              {/* Quick admin link to edit lesson */}
+              {(session?.user?.role === 'ADMIN' || session?.user?.role === 'MANAGER') && (
+                <Button variant="outline" className="ml-2" onClick={() => router.push('/admin/courses')}>
+                  Edit Lesson
+                </Button>
+              )}
             </div>
           </CardHeader>
 
@@ -251,12 +257,10 @@ export default function LessonPage() {
               </div>
             )}
 
-            {/* Text Content */}
-            <div className="prose prose-gray max-w-none">
-              <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">
-                {lesson.content}
-              </div>
-            </div>
+            {/* Text/HTML Content */}
+            {(lesson.contentType === 'TEXT' || lesson.contentType === 'MIXED') && (
+              <div className="prose prose-gray max-w-none text-gray-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: lesson.content }} />
+            )}
           </CardContent>
         </Card>
 
