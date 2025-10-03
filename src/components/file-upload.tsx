@@ -34,7 +34,7 @@ const getAcceptString = (type: string) => {
     case 'images': return 'image/*'
     case 'videos': return 'video/*'
     case 'audio': return 'audio/*'
-    case 'files': return '.pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx'
+    case 'files': return '.pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx,image/*'
     default: return '*/*'
   }
 }
@@ -54,6 +54,13 @@ export default function FileUpload({
     const target = process.env.NEXT_PUBLIC_UPLOAD_TARGET?.toLowerCase()
     if (target === 'cloudinary') return '/api/upload/cloudinary'
     if (target === 's3') return '/api/upload/s3'
+    if (target === 'vercel') return '/api/upload/vercel'
+    // In production, never fall back to local storage
+    if (process.env.NODE_ENV === 'production') {
+      // Default to vercel blob if no explicit target is provided
+      return '/api/upload/vercel'
+    }
+    // default to built-in local upload handler for dev
     return '/api/upload'
   }
 
@@ -68,9 +75,12 @@ export default function FileUpload({
     try {
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('type', type)
+      // Cloudinary route expects 'audios' (plural); normalize for that endpoint only
+      const endpoint = getUploadEndpoint()
+      const normalizedType = endpoint.includes('/cloudinary') && type === 'audio' ? 'audios' : type
+      formData.append('type', normalizedType)
 
-      const response = await fetch(getUploadEndpoint(), {
+      const response = await fetch(endpoint, {
         method: 'POST',
         body: formData,
       })

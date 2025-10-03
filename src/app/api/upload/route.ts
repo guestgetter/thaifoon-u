@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile } from 'fs/promises'
+import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -47,7 +47,9 @@ export async function POST(request: NextRequest) {
     // Save file to public/uploads directory
     const uploadDir = join(process.cwd(), 'public', 'uploads', type)
     const filePath = join(uploadDir, uniqueFilename)
-    
+    // Ensure directory exists (recursive for nested type folders)
+    await mkdir(uploadDir, { recursive: true })
+
     await writeFile(filePath, buffer)
 
     // Return file information

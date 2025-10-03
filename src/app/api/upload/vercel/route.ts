@@ -21,7 +21,8 @@ export async function POST(request: NextRequest) {
 
     // Validate file type
     const validTypes = {
-      files: ['pdf', 'doc', 'docx', 'txt', 'ppt', 'pptx', 'xls', 'xlsx'],
+      // Allow common documents AND images when client sends type="files" (SOP attachments)
+      files: ['pdf', 'doc', 'docx', 'txt', 'ppt', 'pptx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'gif', 'webp'],
       images: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
       videos: ['mp4', 'webm', 'mov', 'avi'],
       audio: ['mp3', 'wav', 'ogg', 'm4a']
