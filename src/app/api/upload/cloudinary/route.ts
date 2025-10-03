@@ -23,7 +23,14 @@ export async function POST(request: NextRequest) {
       'images': ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
       'videos': ['video/mp4', 'video/webm', 'video/ogg'],
       'audios': ['audio/mpeg', 'audio/wav', 'audio/ogg'],
-      'files': ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain']
+      // Allow common docs AND images when the client sends type="files" (used by SOP attachments)
+      'files': [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain',
+        'image/jpeg', 'image/png', 'image/gif', 'image/webp'
+      ]
     }
 
     if (type && validTypes[type as keyof typeof validTypes]) {
