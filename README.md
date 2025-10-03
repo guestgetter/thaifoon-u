@@ -1,3 +1,30 @@
+## Bulk import Franchise Starter Kit content from Notion
+
+1. Export each Notion section as HTML. Name files exactly after sections:
+
+```
+imports/franchise/
+  Personal Note.html
+  Introduction.html
+  Organizational Structure.html
+  Company Directory.html
+  Preferred Vendor List.html
+  Standard Operating Procedures.html
+  Employee Training Guide.html
+  Venue Setup.html
+  Policies & Compliance.html
+  Marketing Playbook.html
+  Post-Opening Support & Directory.html
+```
+
+2. Run the importer:
+
+```
+npm run import:franchise
+```
+
+This will upsert the course and modules and populate lessons wherever matching HTML files are found.
+
 # Thaifoon University - Restaurant Training Portal
 
 A comprehensive, mobile-first learning management system designed specifically for restaurant staff training. Built with Next.js 14, TypeScript, and Tailwind CSS.
