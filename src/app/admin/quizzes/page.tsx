@@ -38,7 +38,7 @@ export default function AdminQuizzesPage() {
           <h1 className="text-2xl font-bold">Quiz Management</h1>
           <div className="flex gap-2">
             <Button asChild>
-              <a href="/admin/quizzes/create">Create Quiz</a>
+              <Link href="/admin/quizzes/create">Create Quiz</Link>
             </Button>
             <Button variant="outline" asChild>
               <a href="/quizzes" target="_blank" rel="noreferrer">Open Public Quizzes</a>
