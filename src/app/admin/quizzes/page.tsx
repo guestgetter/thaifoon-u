@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import MainLayout from '@/components/layout/main-layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 interface QuizSummary {
   id: string
@@ -57,6 +58,14 @@ export default function AdminQuizzesPage() {
                 <CardContent>
                   <div className="text-sm text-gray-600 mb-2">{q.description || '—'}</div>
                   <div className="text-sm text-gray-600">{q._count.questions} questions • {q._count.attempts} attempts</div>
+                  <div className="mt-4 flex gap-2">
+                    <Button asChild size="sm">
+                      <Link href={`/quizzes/${q.id}`} target="_blank">Preview</Link>
+                    </Button>
+                    <Button asChild size="sm" variant="outline">
+                      <Link href={`/admin/quizzes/${q.id}`}>Edit</Link>
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
