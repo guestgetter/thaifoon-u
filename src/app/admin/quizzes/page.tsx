@@ -35,9 +35,14 @@ export default function AdminQuizzesPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Quiz Management</h1>
-          <Button asChild>
-            <a href="/admin/quizzes/create">Create Quiz</a>
-          </Button>
+          <div className="flex gap-2">
+            <Button asChild>
+              <a href="/admin/quizzes/create">Create Quiz</a>
+            </Button>
+            <Button variant="outline" asChild>
+              <a href="/quizzes" target="_blank" rel="noreferrer">Open Public Quizzes</a>
+            </Button>
+          </div>
         </div>
 
         {loading ? (

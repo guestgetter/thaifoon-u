@@ -35,80 +35,18 @@ export default function QuizzesPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // TODO: Fetch actual quizzes from API
-    // For now, using mock data that matches our seed data
-    setQuizzes([
-      {
-        id: "1",
-        title: "Food Safety Assessment",
-        description: "Test your knowledge of basic food safety principles",
-        passingScore: 80,
-        maxAttempts: 3,
-        timeLimit: 30,
-        isPublished: true,
-        createdAt: "2024-01-15T09:00:00Z",
-        questions: [
-          { id: "1", points: 1 },
-          { id: "2", points: 1 },
-          { id: "3", points: 1 }
-        ],
-        userAttempts: [
-          {
-            id: "1",
-            score: 67,
-            passed: false,
-            completedAt: "2024-01-20T14:30:00Z"
-          },
-          {
-            id: "2",
-            score: 89,
-            passed: true,
-            completedAt: "2024-01-22T10:15:00Z"
-          }
-        ]
-      },
-      {
-        id: "2",
-        title: "Customer Service Basics",
-        description: "Essential customer service skills and protocols",
-        passingScore: 75,
-        maxAttempts: 3,
-        timeLimit: 25,
-        isPublished: true,
-        createdAt: "2024-01-10T16:00:00Z",
-        questions: [
-          { id: "4", points: 1 },
-          { id: "5", points: 1 },
-          { id: "6", points: 1 },
-          { id: "7", points: 1 },
-          { id: "8", points: 1 }
-        ]
-      },
-      {
-        id: "3",
-        title: "Kitchen Safety Procedures",
-        description: "Safety protocols for kitchen operations",
-        passingScore: 85,
-        maxAttempts: 2,
-        timeLimit: 20,
-        isPublished: true,
-        createdAt: "2024-01-05T10:30:00Z",
-        questions: [
-          { id: "9", points: 2 },
-          { id: "10", points: 2 },
-          { id: "11", points: 1 }
-        ],
-        userAttempts: [
-          {
-            id: "3",
-            score: 92,
-            passed: true,
-            completedAt: "2024-01-18T16:45:00Z"
-          }
-        ]
+    async function load() {
+      try {
+        const res = await fetch('/api/quizzes')
+        if (res.ok) {
+          const data = await res.json()
+          setQuizzes(data)
+        }
+      } finally {
+        setLoading(false)
       }
-    ])
-    setLoading(false)
+    }
+    load()
   }, [])
 
   const formatDate = (dateString: string) => {
