@@ -40,10 +40,13 @@ export async function POST(request: NextRequest) {
     const cleanFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
     const fileName = `${type}/${timestamp}-${cleanFileName}`
 
-    // Upload to Vercel Blob - SUPER SIMPLE!
-    const blob = await put(fileName, file, {
-      access: 'public',
-    })
+    // Upload to Vercel Blob
+    const options: { access: 'public'; token?: string } = { access: 'public' }
+    // Prefer token when provided (required if project doesn't have automatic token)
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      options.token = process.env.BLOB_READ_WRITE_TOKEN
+    }
+    const blob = await put(fileName, file, options)
 
     // Return file information
     return NextResponse.json({
