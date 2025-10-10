@@ -38,66 +38,20 @@ export default function CoursesPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // TODO: Fetch actual courses from API
-    // For now, using mock data that matches our seed data
-    setCourses([
-      {
-        id: "1",
-        title: "Food Safety Fundamentals",
-        description: "Essential food safety protocols every team member must know",
-        thumbnail: "/course-thumbnails/food-safety.jpg",
-        category: {
-          name: "Food Safety",
-          color: "#ef4444"
-        },
-        modules: [
-          {
-            id: "1",
-            title: "Personal Hygiene",
-            lessons: [
-              { id: "1", title: "Handwashing Procedures", duration: 15 },
-              { id: "2", title: "Proper Uniform and Appearance", duration: 10 }
-            ]
-          },
-          {
-            id: "2",
-            title: "Temperature Control",
-            lessons: [
-              { id: "3", title: "Safe Food Temperatures", duration: 20 }
-            ]
-          }
-        ],
-        userProgress: {
-          progress: 65,
-          isCompleted: false
+    async function fetchCourses() {
+      try {
+        const res = await fetch('/api/courses')
+        if (res.ok) {
+          const data = await res.json()
+          setCourses(data)
         }
-      },
-      {
-        id: "2",
-        title: "Customer Service Excellence",
-        description: "Delivering exceptional customer experiences",
-        thumbnail: "/course-thumbnails/customer-service.jpg",
-        category: {
-          name: "Customer Service",
-          color: "#3b82f6"
-        },
-        modules: [
-          {
-            id: "3",
-            title: "Guest Interaction",
-            lessons: [
-              { id: "4", title: "Greeting and Seating", duration: 12 },
-              { id: "5", title: "Taking Orders", duration: 18 }
-            ]
-          }
-        ],
-        userProgress: {
-          progress: 100,
-          isCompleted: true
-        }
+      } catch (e) {
+        console.error('Failed to load courses', e)
+      } finally {
+        setLoading(false)
       }
-    ])
-    setLoading(false)
+    }
+    fetchCourses()
   }, [])
 
   const calculateTotalDuration = (modules: Course['modules']) => {
