@@ -54,7 +54,7 @@ export async function PUT(
 
     const { id } = await params
     const body = await request.json()
-    const { name, email, role, password } = body
+    const { name, email, role, password } = body as { name?: string; email?: string; role?: 'ADMIN' | 'MANAGER' | 'STAFF'; password?: string }
 
     // Get the current user data
     const currentUser = await prisma.user.findUnique({
@@ -90,8 +90,8 @@ export async function PUT(
       }
     }
 
-    // Prepare update data
-    const updateData: any = {}
+    // Prepare update data (typed)
+    const updateData: { name?: string; email?: string; role?: 'ADMIN' | 'MANAGER' | 'STAFF'; password?: string } = {}
     if (name) updateData.name = name
     if (email) updateData.email = email
     if (role) updateData.role = role
