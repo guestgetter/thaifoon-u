@@ -76,10 +76,10 @@ export default function UserEditDialog({ userId, onUserUpdated }: UserEditDialog
 
     try {
       // Only send fields that have values
-      const updateData: any = {}
+      const updateData: { name?: string; email?: string; role?: 'ADMIN' | 'MANAGER' | 'STAFF'; password?: string } = {}
       if (formData.name.trim()) updateData.name = formData.name.trim()
       if (formData.email.trim()) updateData.email = formData.email.trim()
-      if (formData.role) updateData.role = formData.role
+      if (formData.role) updateData.role = formData.role as 'ADMIN' | 'MANAGER' | 'STAFF'
       if (formData.password.trim()) updateData.password = formData.password.trim()
 
       const response = await fetch(`/api/admin/users/${userId}`, {
