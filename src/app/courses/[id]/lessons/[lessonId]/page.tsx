@@ -45,7 +45,6 @@ export default function LessonPage() {
   useEffect(() => {
     async function fetchLessonData() {
       try {
-        // Fetch lesson and navigation data in parallel
         const [lessonResponse, navResponse] = await Promise.all([
           fetch(`/api/lessons/${params.lessonId}`),
           fetch(`/api/lessons/${params.lessonId}/navigation`)
@@ -84,13 +83,10 @@ export default function LessonPage() {
       
       if (response.ok) {
         setCompleted(true)
-        
-        // Auto-advance to next lesson after a short delay
         setTimeout(() => {
           if (navigation?.next) {
             router.push(`/courses/${lesson.module.course.id}/lessons/${navigation.next.id}`)
           } else {
-            // If this was the last lesson, go back to course overview
             handleBackToCourse()
           }
         }, 1500)
@@ -107,7 +103,6 @@ export default function LessonPage() {
   }
 
   const getVideoEmbedUrl = (url: string) => {
-    // Convert YouTube URLs to embed format
     if (url.includes('youtube.com/watch?v=')) {
       const videoId = url.split('v=')[1].split('&')[0]
       return `https://www.youtube.com/embed/${videoId}`
@@ -116,12 +111,19 @@ export default function LessonPage() {
       const videoId = url.split('youtu.be/')[1].split('?')[0]
       return `https://www.youtube.com/embed/${videoId}`
     }
-    // Convert Vimeo URLs to embed format
     if (url.includes('vimeo.com/')) {
       const videoId = url.split('vimeo.com/')[1]
       return `https://player.vimeo.com/video/${videoId}`
     }
     return url
+  }
+
+  const goToLessonEditor = () => {
+    if (!lesson) return
+    const courseId = lesson.module.course.id
+    const moduleId = lesson.module.id
+    const lessonId = lesson.id
+    router.push(`/admin/courses/${courseId}?moduleId=${moduleId}&lessonId=${lessonId}&edit=1`)
   }
 
   if (loading) {
@@ -149,7 +151,6 @@ export default function LessonPage() {
   return (
     <MainLayout>
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <Button variant="outline" onClick={handleBackToCourse}>
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -167,7 +168,6 @@ export default function LessonPage() {
           </div>
         </div>
 
-        {/* Lesson Content */}
         <Card>
           <CardHeader>
             <div className="flex items-start justify-between">
@@ -206,11 +206,15 @@ export default function LessonPage() {
                   Mark Complete
                 </Button>
               )}
+              {(session?.user?.role === 'ADMIN' || session?.user?.role === 'MANAGER') && (
+                <Button variant="outline" className="ml-2" onClick={goToLessonEditor}>
+                  Edit Lesson
+                </Button>
+              )}
             </div>
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* Video Content */}
             {(lesson.contentType === 'VIDEO' || lesson.contentType === 'MIXED') && lesson.videoUrl && (
               <div className="aspect-video">
                 <iframe
@@ -222,7 +226,6 @@ export default function LessonPage() {
               </div>
             )}
 
-            {/* File Content */}
             {(lesson.contentType === 'FILE' || lesson.contentType === 'MIXED') && lesson.fileUrl && (
               <div className="border border-gray-200 rounded-lg p-4">
                 <div className="flex items-center justify-between">
@@ -251,16 +254,12 @@ export default function LessonPage() {
               </div>
             )}
 
-            {/* Text Content */}
-            <div className="prose prose-gray max-w-none">
-              <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">
-                {lesson.content}
-              </div>
-            </div>
+            {(lesson.contentType === 'TEXT' || lesson.contentType === 'MIXED') && (
+              <div className="prose prose-gray max-w-none text-gray-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: lesson.content }} />
+            )}
           </CardContent>
         </Card>
 
-        {/* Navigation */}
         <div className="flex justify-between">
           {navigation?.previous ? (
             <Button 
